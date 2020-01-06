@@ -28,6 +28,12 @@ export default class App extends Component {
     target.value = '';
   };
 
+  removeTodo = id => {
+    this.setState({
+      todos: [...this.state.todos.filter(todo => todo.id !== id)],
+    });
+  };
+
   render() {
     return (
       <>
@@ -59,7 +65,10 @@ export default class App extends Component {
                     defaultChecked={todo.completed ? true : false}
                   />
                   <label htmlFor={'ck-myId' + todo.id}>{todo.content}</label>
-                  <i className="remove-todo far fa-times-circle"></i>
+                  <i
+                    className="remove-todo far fa-times-circle"
+                    onClick={() => this.removeTodo(todo.id)}
+                  ></i>
                 </li>
               ))}
           </ul>
