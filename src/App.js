@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class App extends Component {
+  constructor(props) {
+    super(props);
 
-export default App;
+    this.state = {
+      todos: [
+        { id: 1, content: 'HTML', completed: false },
+        { id: 2, content: 'CSS', completed: true },
+        { id: 3, content: 'Javascript', completed: false },
+      ],
+    };
+  }
+
+  render() {
+    return (
+      <>
+        <div class="container">
+          <h1 class="title">Todos</h1>
+          <div class="ver">2.0</div>
+
+          <input class="input-todo" placeholder="What needs to be done?" autofocus />
+          <ul class="nav">
+            <li id="all" class="active">
+              All
+            </li>
+            <li id="active">Active</li>
+            <li id="completed">Completed</li>
+          </ul>
+
+          <ul class="todos">
+            {/* <li id="myId" class="todo-item">
+            <input class="custom-checkbox" type="checkbox" id="ck-myId">
+            <label for="ck-myId">HTML</label>
+            <i class="remove-todo far fa-times-circle"></i>
+            </li> */}
+          </ul>
+          <div class="footer">
+            <div class="complete-all">
+              <input class="custom-checkbox" type="checkbox" id="ck-complete-all" />
+              <label for="ck-complete-all">Mark all as complete</label>
+            </div>
+            <div class="clear-completed">
+              <button class="btn">
+                Clear completed (<span class="completed-todos">0</span>)
+              </button>
+              <strong class="active-todos">0</strong> items left
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+}
