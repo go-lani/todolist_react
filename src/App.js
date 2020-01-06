@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CreateTodo } from './components/Todolist';
 import './App.css';
 
 export default class App extends Component {
@@ -37,13 +38,22 @@ export default class App extends Component {
 
   toggleCompleted = id => {
     this.setState({
-      todos: [...this.state.todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo))],
+      todos: [
+        ...this.state.todos.map(todo =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+        ),
+      ],
     });
   };
 
   allComplete = e => {
     this.setState({
-      todos: [...this.state.todos.map(todo => ({ ...todo, completed: e.target.checked }))],
+      todos: [
+        ...this.state.todos.map(todo => ({
+          ...todo,
+          completed: e.target.checked,
+        })),
+      ],
     });
   };
 
@@ -68,33 +78,49 @@ export default class App extends Component {
     thisLi.classList.add('active');
   };
 
-  createTodo = todo => {
-    return (
-      <li key={todo.id} id={todo.id} className="todo-item">
-        <input
-          className="custom-checkbox"
-          type="checkbox"
-          id={'ck-myId' + todo.id}
-          checked={todo.completed ? true : false}
-          onChange={() => this.toggleCompleted(todo.id)}
-        />
-        <label htmlFor={'ck-myId' + todo.id}>{todo.content}</label>
-        <i className="remove-todo far fa-times-circle" onClick={() => this.removeTodo(todo.id)}></i>
-      </li>
-    );
-  };
-
   renderCategory = (todos, category) => {
     const _todos = todos;
     switch (category) {
       case 'all':
-        return _todos.map(todo => this.createTodo(todo));
+        return _todos.map(todo => (
+          <CreateTodo
+            key={todo.id}
+            todo={todo}
+            removeTodo={this.removeTodo}
+            toggleCompleted={this.toggleCompleted}
+          />
+        ));
       case 'active':
-        return _todos.filter(todo => todo.completed === true).map(todo => this.createTodo(todo));
+        return _todos
+          .filter(todo => todo.completed === false)
+          .map(todo => (
+            <CreateTodo
+              key={todo.id}
+              todo={todo}
+              removeTodo={this.removeTodo}
+              toggleCompleted={this.toggleCompleted}
+            />
+          ));
       case 'completed':
-        return _todos.filter(todo => todo.completed === false).map(todo => this.createTodo(todo));
+        return _todos
+          .filter(todo => todo.completed === true)
+          .map(todo => (
+            <CreateTodo
+              key={todo.id}
+              todo={todo}
+              removeTodo={this.removeTodo}
+              toggleCompleted={this.toggleCompleted}
+            />
+          ));
       default:
-        return _todos.map(todo => this.createTodo(todo));
+        return _todos.map(todo => (
+          <CreateTodo
+            key={todo.id}
+            todo={todo}
+            removeTodo={this.removeTodo}
+            toggleCompleted={this.toggleCompleted}
+          />
+        ));
     }
   };
 
@@ -106,7 +132,15 @@ export default class App extends Component {
           <h1 className="title">Todos</h1>
           <div className="ver">2.0</div>
 
-          <input className="input-todo" placeholder="What needs to be done?" onKeyPress={this.addTodo} autoFocus />
+          {/* 할일 추가 영역 */}
+          <input
+            className="input-todo"
+            placeholder="What needs to be done?"
+            onKeyPress={this.addTodo}
+            autoFocus
+          />
+
+          {/* 할일 카테고리 탭 영역 */}
           <ul className="nav" onClick={this.changeCategory}>
             <li id="all" className="active">
               All
@@ -114,16 +148,28 @@ export default class App extends Component {
             <li id="active">Active</li>
             <li id="completed">Completed</li>
           </ul>
+
+          {/* 할일 리스트 영역 */}
           <ul className="todos">{this.renderCategory(todos, category)}</ul>
+
+          {/* 할일 푸터 영역 */}
           <div className="footer">
             <div className="complete-all">
-              <input className="custom-checkbox" type="checkbox" id="ck-complete-all" onChange={this.allComplete} />
+              <input
+                className="custom-checkbox"
+                type="checkbox"
+                id="ck-complete-all"
+                onChange={this.allComplete}
+              />
               <label htmlFor="ck-complete-all">Mark all as complete</label>
             </div>
             <div className="clear-completed">
               <button className="btn" onClick={this.clearComplete}>
-                Clear completed (
-                <span className="completed-todos">{todos.filter(todo => todo.completed === true).length}</span>)
+                Clear Completed (
+                <span className="completed-todos">
+                  {todos.filter(todo => todo.completed === true).length}
+                </span>
+                )
               </button>
               <strong className="active-todos">
                 {todos.filter(todo => todo.completed === true).length}
