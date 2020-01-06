@@ -34,6 +34,30 @@ export default class App extends Component {
     });
   };
 
+  toggleCompleted = id => {
+    this.setState(
+      {
+        todos: [
+          ...this.state.todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
+        ],
+      },
+      () => {
+        console.log(this.state.todos);
+      },
+    );
+  };
+
+  allComplete = e => {
+    this.setState(
+      {
+        todos: [...this.state.todos.map(todo => ({ ...todo, completed: e.target.checked }))],
+      },
+      () => {
+        console.log(this.state.todos);
+      },
+    );
+  };
+
   render() {
     return (
       <>
@@ -62,26 +86,36 @@ export default class App extends Component {
                     className="custom-checkbox"
                     type="checkbox"
                     id={'ck-myId' + todo.id}
-                    defaultChecked={todo.completed ? true : false}
+                    checked={todo.completed ? true : false}
+                    onChange={() => this.toggleCompleted(todo.id)}
                   />
                   <label htmlFor={'ck-myId' + todo.id}>{todo.content}</label>
-                  <i
-                    className="remove-todo far fa-times-circle"
-                    onClick={() => this.removeTodo(todo.id)}
-                  ></i>
+                  <i className="remove-todo far fa-times-circle" onClick={() => this.removeTodo(todo.id)}></i>
                 </li>
               ))}
           </ul>
           <div className="footer">
             <div className="complete-all">
-              <input className="custom-checkbox" type="checkbox" id="ck-complete-all" />
+              <input
+                className="custom-checkbox"
+                type="checkbox"
+                id="ck-complete-all"
+                onChange={this.allComplete}
+              />
               <label htmlFor="ck-complete-all">Mark all as complete</label>
             </div>
             <div className="clear-completed">
               <button className="btn">
-                Clear completed (<span className="completed-todos">0</span>)
+                Clear completed (
+                <span className="completed-todos">
+                  {this.state.todos.filter(todo => todo.completed === true).length}
+                </span>
+                )
               </button>
-              <strong className="active-todos">0</strong> items left
+              <strong className="active-todos">
+                {this.state.todos.filter(todo => todo.completed === true).length}
+                items left
+              </strong>
             </div>
           </div>
         </div>
