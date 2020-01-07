@@ -14,15 +14,13 @@ export default function Footer({todos, allComplete, clearComplete }) {
       </div>
       <div className="clear-completed">
         <button className="btn" onClick={clearComplete}>
-          Clear Completed (
-          <span className="completed-todos">
+          Clear Completed
+          (<span className="completed-todos">
             {todos.filter(todo => todo.completed === true).length}
-          </span>
-          )
+          </span>)
         </button>
         <strong className="active-todos">
-          {todos.filter(todo => todo.completed === false).length}
-          items left
+          {todos.filter(todo => todo.completed === false).length} items left
         </strong>
       </div>
     </footer>
