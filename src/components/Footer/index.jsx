@@ -21,7 +21,7 @@ export default function Footer({todos, allComplete, clearComplete }) {
           )
         </button>
         <strong className="active-todos">
-          {todos.filter(todo => todo.completed === true).length}
+          {todos.filter(todo => todo.completed === false).length}
           items left
         </strong>
       </div>
