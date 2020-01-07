@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { CreateTodo } from './components/Todolist';
+import Tab from './components/Tab';
+import Tablist from './components/Tab/TabList';
 import './App.css';
 
 export default class App extends Component {
@@ -12,7 +14,11 @@ export default class App extends Component {
         { id: 2, content: 'CSS', completed: true },
         { id: 3, content: 'Javascript', completed: false },
       ],
-      category: 'all',
+      categorys: [
+        { id: 'all', open: true },
+        { id: 'active', open: false },
+        { id: 'completed', open: false },
+      ],
     };
   }
 
@@ -64,11 +70,17 @@ export default class App extends Component {
   };
 
   changeCategory = e => {
+    if (e.target.classList.contains('nav')) return;
+
     const Lis = e.target.parentNode.children;
     const thisLi = e.target;
 
     this.setState({
-      category: thisLi.id,
+      categorys: [
+        ...this.state.categorys.map(category =>
+          category.id === thisLi.id ? { ...category, open: true } : { ...category, open: false },
+        ),
+      ],
     });
 
     [...Lis].forEach(li => {
@@ -78,9 +90,10 @@ export default class App extends Component {
     thisLi.classList.add('active');
   };
 
-  renderCategory = (todos, category) => {
+  renderCategory = (todos, categorys) => {
+    const [{ id: currentCategory }] = categorys.filter(category => category.open === true);
     const _todos = todos;
-    switch (category) {
+    switch (currentCategory) {
       case 'all':
         return _todos.map(todo => (
           <CreateTodo
@@ -125,7 +138,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { todos, category } = this.state;
+    const { todos, categorys } = this.state;
     return (
       <>
         <div className="container">
@@ -141,16 +154,14 @@ export default class App extends Component {
           />
 
           {/* 할일 카테고리 탭 영역 */}
-          <ul className="nav" onClick={this.changeCategory}>
-            <li id="all" className="active">
-              All
-            </li>
-            <li id="active">Active</li>
-            <li id="completed">Completed</li>
-          </ul>
+          <Tab onChangeTab={this.changeCategory}>
+            {this.state.categorys.map(category => (
+              <Tablist key={category.id} categoryInfo={category} />
+            ))}
+          </Tab>
 
           {/* 할일 리스트 영역 */}
-          <ul className="todos">{this.renderCategory(todos, category)}</ul>
+          <ul className="todos">{this.renderCategory(todos, categorys)}</ul>
 
           {/* 할일 푸터 영역 */}
           <div className="footer">
