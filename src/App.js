@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import { CreateTodo } from './components/Todolist';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import TodosWrapper from './components/Todolist';
+import Todo from './components/Todolist/Todo';
 import Tab from './components/Tab';
 import Tablist from './components/Tab/TabList';
+import CreateInput from './components/Inputs/CreateInput';
 import './App.css';
 
 export default class App extends Component {
@@ -96,7 +100,7 @@ export default class App extends Component {
     switch (currentCategory) {
       case 'all':
         return _todos.map(todo => (
-          <CreateTodo
+          <Todo
             key={todo.id}
             todo={todo}
             removeTodo={this.removeTodo}
@@ -107,7 +111,7 @@ export default class App extends Component {
         return _todos
           .filter(todo => todo.completed === false)
           .map(todo => (
-            <CreateTodo
+            <Todo
               key={todo.id}
               todo={todo}
               removeTodo={this.removeTodo}
@@ -118,7 +122,7 @@ export default class App extends Component {
         return _todos
           .filter(todo => todo.completed === true)
           .map(todo => (
-            <CreateTodo
+            <Todo
               key={todo.id}
               todo={todo}
               removeTodo={this.removeTodo}
@@ -127,7 +131,7 @@ export default class App extends Component {
           ));
       default:
         return _todos.map(todo => (
-          <CreateTodo
+          <Todo
             key={todo.id}
             todo={todo}
             removeTodo={this.removeTodo}
@@ -142,16 +146,9 @@ export default class App extends Component {
     return (
       <>
         <div className="container">
-          <h1 className="title">Todos</h1>
-          <div className="ver">2.0</div>
-
-          {/* 할일 추가 영역 */}
-          <input
-            className="input-todo"
-            placeholder="What needs to be done?"
-            onKeyPress={this.addTodo}
-            autoFocus
-          />
+          <Header>
+            <CreateInput onAddTodo={this.addTodo} />
+          </Header>
 
           {/* 할일 카테고리 탭 영역 */}
           <Tab onChangeTab={this.changeCategory}>
@@ -161,33 +158,10 @@ export default class App extends Component {
           </Tab>
 
           {/* 할일 리스트 영역 */}
-          <ul className="todos">{this.renderCategory(todos, categorys)}</ul>
+          <TodosWrapper>{this.renderCategory(todos, categorys)}</TodosWrapper>
 
           {/* 할일 푸터 영역 */}
-          <div className="footer">
-            <div className="complete-all">
-              <input
-                className="custom-checkbox"
-                type="checkbox"
-                id="ck-complete-all"
-                onChange={this.allComplete}
-              />
-              <label htmlFor="ck-complete-all">Mark all as complete</label>
-            </div>
-            <div className="clear-completed">
-              <button className="btn" onClick={this.clearComplete}>
-                Clear Completed (
-                <span className="completed-todos">
-                  {todos.filter(todo => todo.completed === true).length}
-                </span>
-                )
-              </button>
-              <strong className="active-todos">
-                {todos.filter(todo => todo.completed === true).length}
-                items left
-              </strong>
-            </div>
-          </div>
+          <Footer todos={todos} allComplete={this.allComplete} clearComplete={this.clearComplete} />
         </div>
       </>
     );

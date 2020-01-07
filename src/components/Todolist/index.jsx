@@ -1,17 +1,9 @@
 import React from 'react'
 
-export const CreateTodo = ({ todo: { id, content, completed }, removeTodo, toggleCompleted }) => {
+export default function TodosWrapper(props) {
   return (
-    <li id={id} className="todo-item">
-      <input
-        className="custom-checkbox"
-        type="checkbox"
-        id={'ck-myId' + id}
-        checked={completed ? true : false}
-        onChange={() => toggleCompleted(id)}
-      />
-      <label htmlFor={'ck-myId' + id}>{content}</label>
-      <i className="remove-todo far fa-times-circle" onClick={() => removeTodo(id)}></i>
-    </li>
-  );
-};
+    <ul className="todos">
+      {props.children}
+    </ul>
+  )
+}
