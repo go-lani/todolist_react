@@ -73,28 +73,17 @@ export default class App extends Component {
     });
   };
 
-  changeCategory = e => {
-    if (e.target.classList.contains('nav')) return;
-
-    const Lis = e.target.parentNode.children;
-    const thisLi = e.target;
-
+  changeCategory = id => {
     this.setState({
       categorys: [
         ...this.state.categorys.map(category =>
-          category.id === thisLi.id ? { ...category, open: true } : { ...category, open: false },
+          category.id === id ? { ...category, open: true } : { ...category, open: false },
         ),
       ],
     });
-
-    [...Lis].forEach(li => {
-      li.classList.remove('active');
-    });
-
-    thisLi.classList.add('active');
   };
 
-  renderCategory = (todos, categorys) => {
+  renderTodo = (todos, categorys) => {
     const [{ id: currentCategory }] = categorys.filter(category => category.open === true);
     const _todos = todos;
     switch (currentCategory) {
@@ -151,14 +140,18 @@ export default class App extends Component {
           </Header>
 
           {/* 할일 카테고리 탭 영역 */}
-          <Tab onChangeTab={this.changeCategory}>
+          <Tab>
             {this.state.categorys.map(category => (
-              <Tablist key={category.id} categoryInfo={category} />
+              <Tablist
+                key={category.id}
+                categoryInfo={category}
+                onChangeCategory={this.changeCategory}
+              />
             ))}
           </Tab>
 
           {/* 할일 리스트 영역 */}
-          <TodosWrapper>{this.renderCategory(todos, categorys)}</TodosWrapper>
+          <TodosWrapper>{this.renderTodo(todos, categorys)}</TodosWrapper>
 
           {/* 할일 푸터 영역 */}
           <Footer todos={todos} allComplete={this.allComplete} clearComplete={this.clearComplete} />
