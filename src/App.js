@@ -13,66 +13,91 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      todos: [
-        { id: 1, content: 'HTML', completed: false },
-        { id: 2, content: 'CSS', completed: true },
-        { id: 3, content: 'Javascript', completed: false },
-      ],
+      todos: [],
       categorys: [
         { id: 'all', open: true },
         { id: 'active', open: false },
-        { id: 'completed', open: false },
+        { id: 'done', open: false },
       ],
     };
   }
 
+  componentDidMount() {
+    this.setState({
+      todos: [
+        { id: 1, content: 'HTML', done: false },
+        { id: 2, content: 'CSS', done: true },
+        { id: 3, content: 'Javascript', done: false },
+      ],
+    });
+  }
+
+  // Todo 렌더링 함수
+  renderTodo = (todos, categorys) => {
+    const [{ id: currentCategory }] = categorys.filter(category => category.open === true);
+
+    let _todos = todos;
+
+    if (currentCategory === 'active') _todos = todos.filter(todo => todo.done === false);
+    if (currentCategory === 'done') _todos = todos.filter(todo => todo.done === true);
+
+    return _todos.map(todo => (
+      <Todo key={todo.id} todo={todo} removeTodo={this.removeTodo} toggleDone={this.toggleDone} />
+    ));
+  };
+
+  // Todo 생성시 ID 생성기능
   createId = () => {
     return Math.max(0, ...this.state.todos.map(todo => todo.id)) + 1;
   };
 
+  // Todo 생성기능
   addTodo = ({ key, target, target: { value } }) => {
     if (key !== 'Enter' || value.trim() === '') return;
 
     this.setState({
-      todos: [...this.state.todos, { id: this.createId(), content: value, completed: false }],
+      todos: [...this.state.todos, { id: this.createId(), content: value, done: false }],
     });
 
     target.value = '';
   };
 
+  // Todo 삭제기능
   removeTodo = id => {
     this.setState({
       todos: [...this.state.todos.filter(todo => todo.id !== id)],
     });
   };
 
-  toggleCompleted = id => {
+  // Todo 완료/미완료 체크 기능
+  toggleDone = id => {
     this.setState({
       todos: [
-        ...this.state.todos.map(todo =>
-          todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-        ),
+        ...this.state.todos.map(todo => (todo.id === id ? { ...todo, done: !todo.done } : todo)),
       ],
     });
   };
 
-  allComplete = e => {
+  // 전체 완료 기능
+  allDone = e => {
     this.setState({
       todos: [
         ...this.state.todos.map(todo => ({
           ...todo,
-          completed: e.target.checked,
+          done: e.target.checked,
         })),
       ],
     });
   };
 
-  clearComplete = () => {
+  // 완료한 Todo 삭제기능
+  clearDone = () => {
     this.setState({
-      todos: [...this.state.todos.filter(todo => todo.completed !== true)],
+      todos: [...this.state.todos.filter(todo => todo.done !== true)],
     });
   };
 
+  // 카테고리 탭 기능
   changeCategory = id => {
     this.setState({
       categorys: [
@@ -83,58 +108,12 @@ export default class App extends Component {
     });
   };
 
-  renderTodo = (todos, categorys) => {
-    const [{ id: currentCategory }] = categorys.filter(category => category.open === true);
-    const _todos = todos;
-    switch (currentCategory) {
-      case 'all':
-        return _todos.map(todo => (
-          <Todo
-            key={todo.id}
-            todo={todo}
-            removeTodo={this.removeTodo}
-            toggleCompleted={this.toggleCompleted}
-          />
-        ));
-      case 'active':
-        return _todos
-          .filter(todo => todo.completed === false)
-          .map(todo => (
-            <Todo
-              key={todo.id}
-              todo={todo}
-              removeTodo={this.removeTodo}
-              toggleCompleted={this.toggleCompleted}
-            />
-          ));
-      case 'completed':
-        return _todos
-          .filter(todo => todo.completed === true)
-          .map(todo => (
-            <Todo
-              key={todo.id}
-              todo={todo}
-              removeTodo={this.removeTodo}
-              toggleCompleted={this.toggleCompleted}
-            />
-          ));
-      default:
-        return _todos.map(todo => (
-          <Todo
-            key={todo.id}
-            todo={todo}
-            removeTodo={this.removeTodo}
-            toggleCompleted={this.toggleCompleted}
-          />
-        ));
-    }
-  };
-
   render() {
     const { todos, categorys } = this.state;
     return (
       <>
         <div className="container">
+          {/* Header와 할일 추가 Input 영역 */}
           <Header>
             <CreateInput onAddTodo={this.addTodo} />
           </Header>
@@ -154,7 +133,7 @@ export default class App extends Component {
           <TodosWrapper>{this.renderTodo(todos, categorys)}</TodosWrapper>
 
           {/* 할일 푸터 영역 */}
-          <Footer todos={todos} allComplete={this.allComplete} clearComplete={this.clearComplete} />
+          <Footer todos={todos} allDone={this.allDone} clearDone={this.clearDone} />
         </div>
       </>
     );
