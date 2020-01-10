@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-export default function Footer({todos, onClearDone, onAllDone }) {
+export default function Footer({ todos, onClearDone, onAllDone }) {
   return (
     <footer className="footer">
       <div className="complete-all">
@@ -14,15 +14,16 @@ export default function Footer({todos, onClearDone, onAllDone }) {
       </div>
       <div className="clear-completed">
         <button className="btn" onClick={onClearDone}>
-          Clear Done
-          (<span className="completed-todos">
+          Clear Done (
+          <span className="completed-todos">
             {todos.filter(todo => todo.done === true).length}
-          </span>)
+          </span>
+          )
         </button>
         <strong className="active-todos">
           {todos.filter(todo => todo.done === false).length} items left
         </strong>
       </div>
     </footer>
-  )
+  );
 }
