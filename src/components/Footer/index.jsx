@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Footer({todos, clearDone, allDone }) {
+export default function Footer({todos, onClearDone, onAllDone }) {
   return (
     <footer className="footer">
       <div className="complete-all">
@@ -8,12 +8,12 @@ export default function Footer({todos, clearDone, allDone }) {
           className="custom-checkbox"
           type="checkbox"
           id="ck-complete-all"
-          onChange={allDone}
+          onChange={onAllDone}
         />
         <label htmlFor="ck-complete-all">Mark all as done</label>
       </div>
       <div className="clear-completed">
-        <button className="btn" onClick={clearDone}>
+        <button className="btn" onClick={onClearDone}>
           Clear Done
           (<span className="completed-todos">
             {todos.filter(todo => todo.done === true).length}

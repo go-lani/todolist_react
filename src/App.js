@@ -14,7 +14,7 @@ export default class App extends Component {
 
     this.state = {
       todos: [],
-      categorys: [
+      categories: [
         { id: 'all', open: true },
         { id: 'active', open: false },
         { id: 'done', open: false },
@@ -33,8 +33,8 @@ export default class App extends Component {
   }
 
   // Todo 렌더링 함수
-  renderTodo = (todos, categorys) => {
-    const [{ id: currentCategory }] = categorys.filter(category => category.open === true);
+  renderTodo = (todos, categories) => {
+    const [{ id: currentCategory }] = categories.filter(category => category.open === true);
 
     let _todos = todos;
 
@@ -42,7 +42,12 @@ export default class App extends Component {
     if (currentCategory === 'done') _todos = todos.filter(todo => todo.done === true);
 
     return _todos.map(todo => (
-      <Todo key={todo.id} todo={todo} removeTodo={this.removeTodo} toggleDone={this.toggleDone} />
+      <Todo
+        key={todo.id}
+        todo={todo}
+        onRemoveTodo={this.removeTodo}
+        onToggleDone={this.toggleDone}
+      />
     ));
   };
 
@@ -100,8 +105,8 @@ export default class App extends Component {
   // 카테고리 탭 기능
   changeCategory = id => {
     this.setState({
-      categorys: [
-        ...this.state.categorys.map(category =>
+      categories: [
+        ...this.state.categories.map(category =>
           category.id === id ? { ...category, open: true } : { ...category, open: false },
         ),
       ],
@@ -109,7 +114,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { todos, categorys } = this.state;
+    const { todos, categories } = this.state;
     return (
       <>
         <div className="container">
@@ -120,7 +125,7 @@ export default class App extends Component {
 
           {/* 할일 카테고리 탭 영역 */}
           <Tab>
-            {this.state.categorys.map(category => (
+            {this.state.categories.map(category => (
               <Tablist
                 key={category.id}
                 categoryInfo={category}
@@ -130,10 +135,10 @@ export default class App extends Component {
           </Tab>
 
           {/* 할일 리스트 영역 */}
-          <TodosWrapper>{this.renderTodo(todos, categorys)}</TodosWrapper>
+          <TodosWrapper>{this.renderTodo(todos, categories)}</TodosWrapper>
 
           {/* 할일 푸터 영역 */}
-          <Footer todos={todos} allDone={this.allDone} clearDone={this.clearDone} />
+          <Footer todos={todos} onAllDone={this.allDone} onClearDone={this.clearDone} />
         </div>
       </>
     );
