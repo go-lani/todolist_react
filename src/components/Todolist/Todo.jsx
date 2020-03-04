@@ -1,10 +1,6 @@
 import React from 'react';
 
-export default function Todo({
-  todo: { id, content, done },
-  onRemoveTodo,
-  onToggleDone,
-}) {
+export default function Todo({ todo: { id, content, done }, onRemoveTodo, onToggleDone }) {
   return (
     <li id={id} className="todo-item">
       <input
@@ -15,9 +11,7 @@ export default function Todo({
         onChange={() => onToggleDone(id)}
       />
       <label htmlFor={'ck-myId' + id}>{content}</label>
-      <i
-        className="remove-todo far fa-times-circle"
-        onClick={() => onRemoveTodo(id)}></i>
+      <i className="remove-todo far fa-times-circle" onClick={() => onRemoveTodo(id)}></i>
     </li>
   );
 }
